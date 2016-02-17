@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="api.css"/>
+    <style>
+        body{
+            
+        }
+        .contro{
+				width:100%;
+				height: 40px;
+				float:left;
+				background-color: #d8d8d8;
+				position: relative;
+			}
+			.play_button{
+				width: 20px;
+				height: 40px;
+				position:absolute;
+				left: 10px;
+			}
+			.play_button img{
+				width:100%;
+				height: 20px;
+				float: left;
+				margin-top: 8px;
+			}
+			.play_line{
+				width: 60%;
+				height: 20px;
+				position: absolute;
+				left: 45px;
+			}
+			.play_time{
+				height: 40px;
+				position: absolute;
+				right: 25px;
+			}
+			.play_time span{
+				float: left;
+				line-height: 36px;
+				font-size: 10px;
+			}
+			.play_qp{
+				width: 20px;
+				height: 40px;
+				float: left;
+				position: absolute;
+				right: 5px;
+			}
+			.play_qp img{
+				width: 15px;
+				height: 15px;
+				float: right;
+				margin-top: 10px;
+			}
+			.bg{
+				width:100%; 
+				height:300px; 
+				background:#000;
+			}
+			.contro-wrap{
+				position: absolute;
+				z-index: 9999;
+				top: 0;
+				width: 100%;
+				height: 40px;
+			}
+    </style>
+</head>
+<body>	
+    
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript">
+var param = null;
+var video = null;
+var fullScreen = false;
+var isplaying = 0;
+function palying(status){
+	if(isplaying == 1){
+		isplaying = status;
+		document.getElementById("idplaying").src = "../image/zanting.png";
+		video.start();
+	}else{
+		isplaying = 1;
+		document.getElementById("idplaying").src = "../image/bofang.png";
+		video.pause();
+	}
+}
+
+function countPlay(){
+	var url = "http://youji.sc3rx.com/index.php?m=app&c=index&a=countPlay";
+	api.ajax({
+	           url: url,
+	           method: 'post',
+	           timeout: 30,
+	           dataType: 'json',
+	           returnAll:false,
+	           data:{
+	           		values:param,
+	           }
+	},function(ret,err){
+	           if (ret) {
+	             	//alert(ret.op);
+	           } else {
+	               api.alert({
+	                   msg:('1错误码：'+err.code+'；错误信息：'+err.msg+'网络状态码：'+err.statusCode)
+	               });
+	           };
+	});
+}
+function setPlayProgress(current){
+	
+}
+
+function start(){
+   video.start();
+}
+
+function pause(){
+   video.pause();
+}
+
+function addPlayEvent(){
+	video.addEventListener({
+	    name: 'play'
+	}, function(ret, err){
+		if (ret.eventType == 'playing') {
+			api.execScript({
+			    name:'videoplay',
+			    frameName: 'videoplay_control',
+			    script:"setRangeVal('"+ret.current+"');"
+			});
+		}	    
+	});
+}
+
+function openContro(duration){
+	api.openFrame({
+	    name: 'videoplay_control',
+	    url: './videoplay_control.html',
+	    bounces: false,
+	    bgColor:'rgba(0,0,0,0)',
+	    rect: {
+	    	x: 0,
+	    	y: 310,
+	    	w: 'auto',
+	    	h: 40
+	    },
+	    pageParam:{
+	    	duration:duration,
+	    }
+	});
+}
+
+apiready = function(){
+		api.showProgress();		
+       	param = api.pageParam;
+	    video = api.require('videoPlayer');	
+	    var url = 'http://youji.sc3rx.com/index.php?m=app&c=index&a=showStory&id='+param.id+'&catid='+param.catid;
+	    api.ajax({
+	        url: url,
+	        method: 'get',
+	        timeout: 30,
+	        dataType: 'json',
+	        returnAll:false
+	    },function(ret,err){
+	        if (ret) {
+	        	api.execScript({
+	        	    name:'videoplay',
+	        	    script:"setTitle('"+ret.title+"','"+ret.user+"')"
+	        	});
+	        	countPlay();
+	            video.open({
+	                rect:{
+	                    x:0,
+	                    y:0,
+	                    w:api.winWidth,
+	                    h:300
+	                },
+	                path:ret.videourl,
+	                autoPlay:false,
+	                fixedOn:'videoplay_body',
+	                fixed:true,
+	                coverImg:'widget://image/musiclist/musiclistcover.jpg'
+	            },function(ret,err){	            	
+	            	if (ret.status) {
+	            		openContro(ret.duration);	            		
+	            		addPlayEvent();
+	            		api.hideProgress();
+	            	}
+	            });
+	            
+	        } else {
+	            api.alert({
+	                msg:('错误码：'+err.code+'；错误信息：'+err.msg+'网络状态码：'+err.statusCode)
+	            });
+	        };
+	    });
+
+		
+    };
+</script>
+</html>

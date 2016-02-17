@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="api.css"/>
+
+    <link rel="stylesheet" type="text/css" href="../css/mui.min.css"/>
+    <style>
+        body{
+            background: none;
+        }
+        	.contro{
+				width:100%;
+				height: 40px;
+				float:left;
+				background-color: rgba(255,255,255,0.4);
+				position: relative;
+			}
+			.play_button{
+				width: 20px;
+				height: 40px;
+				position:absolute;
+				left: 10px;
+			}
+			.play_button img{
+				width:100%;
+				height: 20px;
+				float: left;
+				margin-top: 8px;
+			}
+			.play_line{
+				width: 60%;
+				height: 20px;
+				position: absolute;
+				left: 45px;
+			}
+			.play_time{
+				height: 40px;
+				position: absolute;
+				right: 25px;
+			}
+			.play_time span{
+				float: left;
+				line-height: 36px;
+				font-size: 10px;
+			}
+			.play_qp{
+				width: 20px;
+				height: 40px;
+				float: left;
+				position: absolute;
+				right: 5px;
+			}
+			.play_qp img{
+				width: 15px;
+				height: 15px;
+				float: right;
+				margin-top: 10px;
+			}
+			.bg{
+				width:100%; 
+				height:300px; 
+				background:#000;
+			}
+			
+    </style>
+    </style>
+</head>
+<body>
+    <div class="contro">
+			<div onclick="palying()" tapmode="" class="play_button">
+				<img id="idplaying" src="../image/bofang.png"/>
+			</div>
+			<div class="play_line">
+				<div class="mui-input-row mui-input-range">
+					<input type="range" id='inline-range' value="0" min="0" max="100" >
+				</div>
+			</div>
+			<div class="play_time">
+				<span id="nowtime">00:00</span>
+				<span>/</span>
+				<span id="alltime">99:99</span>
+			</div>
+			<div onclick="showquanping()" tapmode="" class="play_qp">
+				<img src="../image/quanping.png">
+			</div>
+	</div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/mui.min.js"></script>
+<script type="text/javascript">
+	var range = $api.byId('inline-range');
+	var param = null;
+	var isplaying = 0;
+	function palying(){
+		if(isplaying == 1){
+			isplaying = 0;
+			document.getElementById("idplaying").src = "../image/zanting.png";
+			api.execScript({
+			    name:'videoplay',
+			    frameName: 'videoplay_body',
+			    script:'start();'
+			});
+		}else{
+			isplaying = 1;
+			document.getElementById("idplaying").src = "../image/bofang.png";
+			api.execScript({
+			    name:'videoplay',
+			    frameName: 'videoplay_body',
+			    script:'pause();'
+			});
+		}
+	}
+
+	function setRangeMax(max){
+		var text = formatTime(max);
+	    $api.html($api.byId('alltime'), text);
+	    $api.attr(range, 'max', max);
+	}
+
+	function setRangeVal(val){
+		$api.val(range, val);
+		var timeText = formatTime(val);
+		$api.html($api.byId('nowtime'), timeText);
+	}
+	function formatTime(seconds){
+		var m = parseInt(seconds/60);
+	    var s = Math.round(seconds % 60);
+	    var text = ':';
+	    if (m<10) {
+	       text = '0'+m+text;
+	    }else{
+	       text = m+text;
+	    }
+	    if (s<10) {
+	       text = text + '0'+s;
+	    }else{
+	        text = text + s;
+	    }
+	    return text;
+	}
+
+	function showquanping(){
+		api.toast({
+		    msg: 'msg',
+		    duration: 2000,
+		    location: 'bottom'
+		});
+	}
+
+    apiready = function(){
+        param = api.pageParam;
+        setRangeMax(param.duration)
+    };
+</script>
+</html>
