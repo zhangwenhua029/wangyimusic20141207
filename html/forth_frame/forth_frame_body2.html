@@ -110,7 +110,7 @@ html,body {min-height: 100%;background-color: #f9f9f9;}
 <body>
 
 <!-- 1 用户登录 -->
-<!--<div class="egret-flex-item profile"  onclick="openNewWin('usercenter')">
+<div class="egret-flex-item profile"  onclick="openNewWin('usercenter')">
 	<div class="egret-flex-item-logo">
 		<img src="../../image/default_head.png" alt="" class="">
 	</div>
@@ -121,41 +121,15 @@ html,body {min-height: 100%;background-color: #f9f9f9;}
 	<div class="egret-flex-item-arrow">
 		<img src="../../image/cm2_list_icn_arr.png" alt="" class="">
 	</div>
-</div>-->
-<!--用户登录2-->
-<div class="egret-flex-item profile"  onclick="openNewWin('userlogin')">
-	<div class="egret-flex-item-logo" id="userimage">
-		<img src="../../image/default_head.png" alt="" class="">
-	</div>
-	<div class="egret-flex-item-shelf">
-		<div class="egret-flex-item-shelf01" id="useremail">注册邮箱</div>
-		<span class="egret-flex-item-shelf02" id="logined">请登录</span>
-	</div>
-	<div class="egret-flex-item-arrow">
-		<img src="../../image/cm2_list_icn_arr.png" alt="" class="">
-	</div>
 </div>
-
 <div class="userinfo">
 	<div class="userinfocol01 userinfocol br">
 		<div class="info">我的收藏</div>
-		<div class="num">0</div><!--应判断用户是否登录 如果登录就传回用户收藏的数据-->
+		<div class="num">0</div>
 	</div>
 	<div class="userinfocol02 userinfocol br">
 		<div class="info">我的上传</div>
-		<div class="num">9</div><!--应判断用户是否登录 如果登录就传回用户上传的数据-->
-	</div>
-</div>
-<!--个人中心-->
-<div class="egret-flex-item isolateitem-top isolateitem-bottom" tapmode="fmbtnhover" onclick="openNewWin('usercenter')">
-	<div class="egret-flex-item-logo">
-		<img src="../../image/frame04cover/usercenter.png" alt="" class="">
-	</div>
-	<div class="egret-flex-item-shelf">
-		<div class="egret-flex-item-shelf01">个人中心</div>
-	</div>
-	<div class="egret-flex-item-arrow">
-		<img src="../../image/cm2_list_icn_arr.png" alt="" class="">
+		<div class="num">9</div>
 	</div>
 </div>
 
@@ -277,27 +251,6 @@ function openShare () {
 	});
 }
 apiready = function  () {
-	var useremail, logined;
-    apiready = function() {
-        useremail = $api.byId('useremail');
-        logined = $api.byId('logined');
-        
-        fnSetUserProfile();
-    };
-
-    function fnSetUserProfile() {
-        var loginInfo = $api.getStorage('loginInfo');
-        if (loginInfo) {
-            useremail.innerHTML = loginInfo.email;
-            logined.innerHTML = '已登录'
-            userimage.src = '../image/my/profile_default.png';
-        } else {
-            userRegion.innerHTML = '';
-            userAccount.innerHTML = '请登录';
-            userAvatar.src = '../image/my/profile_default.png';
-        }
-    };
-
 	}
 </script>
 </html>

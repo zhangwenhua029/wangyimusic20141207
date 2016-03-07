@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+     <meta charset="UTF-8">
+     <meta name="copyright" content="www.apicloud.com" />
+     <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+     <title>听故事</title>
+     <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+     <link rel="stylesheet" type="text/css" href="../../css/idangerous.swiper.css">
+
+    
+    <style>
+    html,body{
+       height: 100%;
+       background-color: #f0f0f0; 
+    }
+    input {
+        height: 50px; width: 80%;
+        font-size: 18px;color: #8E8C8C;
+    }
+    input::-webkit-input-placeholder {
+        color: #ccc;
+    }
+    .h15 {
+        height: 15px
+    }
+    .username, .email, .passwd {
+        background: #fff;
+    }
+    .username img, .passwd img, .email img {
+        vertical-align: top;
+    }
+    .item {
+        background-color: #fff; 
+        border-bottom: 1px solid #e0e0e0;
+        position: relative;
+    }
+    .btn {
+        margin:3px 10px;
+        background: #ff6836;
+        height: 40px; line-height: 40px; 
+        text-align: center;
+        font-size: 20px; margin-top: 20px; 
+        border-radius: 5px;
+        color: #fff;
+    }
+    .username img {
+        width: 25px; margin-top: 15px; margin-left: 10px; margin-right: 9px;
+    }
+    .email img {
+        width: 25px; margin-top: 15px; margin-left: 10px; margin-right: 9px;
+    }
+    .passwd img {
+        height: 25px;margin-top: 10px; margin-left: 10px;margin-right: 10px;
+    }
+    input {outline: none;}
+    </style>
+</head>
+<body>
+    <section class="h15"></section>
+    <section>
+        <div class="item username">
+            <img src="../../image/frame04cover/frame04covermsg.png">
+            <input type="text" placeholder="用户名" id="username">
+        </div>
+        <div class="item email">
+            <img src="../../image/frame04cover/frame04covermsg.png">
+            <input type="text" placeholder="邮箱" id="email">
+        </div>
+        <div class="item passwd">
+            <img src="../../image/frame04cover/login02.png">
+            <input type="password" placeholder="密码" id="passwd">
+        </div>
+        <div class="btn" tapmode onclick="fnRegister()">注 册</div>
+    </section>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/SHA1.js"></script>
+<script type="text/javascript" src="../../script/APICloud-rest.js"></script>
+<script type="text/javascript">
+    function fnRegister() {
+    var email = $api.byId('email').value,
+        username=$api.byId('username').value,
+        password = $api.byId('passwd').value;
+
+        //appId,appKey 这两个值要自己在服务器部署代码实现 如果用自己的服务器；如果用apiclock的就用他们自动生成的。 
+    var appId  = '';
+    var appKey = '';
+    var client = new Resource(appId, appKey);
+    var User = client.Factory("user");
+    User.save({
+        "username": username,
+        "password": password,
+        "email": email
+    }, function(ret, err) {
+        if (ret) {
+            api.toast({
+                msg: '注册成功',
+                duration: 2000,
+                location: 'bottom'
+            });
+
+            api.execScript({
+                name:'login',
+                frameName: 'login_frame',
+                script:'fnAutoCompleteEmail(\''+ ret.email +'\');'
+            });
+            api.closeWin();
+        } else {
+            alert('重复');
+        }
+    })
+};
+    apiready = function(){
+    };
+</script>
+</html>
